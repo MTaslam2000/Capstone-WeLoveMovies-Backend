@@ -1,5 +1,5 @@
 const knex = require("../db/connection.js");
-const reduceProperties = require("../utils/reduce-properties.js");
+const mapProperties = require("../utils/map-properties.js");
 
 function list(isShowing) {
   if (isShowing === "true") {
@@ -37,6 +37,13 @@ function read(movieId) {
     .then((item) => item[0]);
 }
 
+const setCriticsForMovie = mapProperties({
+  critic_id: "critic.critic_id",
+  preferred_name: "critic.preferred_name",
+  surname: "critic.surname",
+  organization_name: "critic.organization_name",
+});
+
 function listReviewsByMovieId(movieId) {
   return knex("reviews as r")
     .join("critics as c", "r.critic_id", "c.critic_id")
@@ -48,7 +55,7 @@ function listReviewsByMovieId(movieId) {
       "c.surname as critic.surname",
       "c.organization_name as critic.organization_name"
     )
-    .then(reduceProperties);
+    .then((data) => data.map(setCriticsForMovie));
 }
 
 module.exports = {
