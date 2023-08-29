@@ -13,6 +13,18 @@ async function ifReviewExists(req, res, next) {
   });
 }
 
+async function update(req, res, next) {
+  const newReview = {
+    ...res.locals.review,
+    ...req.body.data,
+  };
+
+  await service.update(newReview);
+  const updatedReview = await service.read(newReview.review_id);
+  updatedReview.critic = await service.getCritic(newReview.critic_id);
+  res.json({ data: updatedReview });
+}
+
 async function destroy(req, res, next) {
   const { review } = res.locals;
   await service.destroy(review.review_id);
@@ -21,4 +33,5 @@ async function destroy(req, res, next) {
 
 module.exports = {
   delete: [asyncErrorBoundary(ifReviewExists), asyncErrorBoundary(destroy)],
+  update: [asyncErrorBoundary(ifReviewExists), asyncErrorBoundary(update)],
 };
