@@ -8,6 +8,13 @@ function list(isShowing) {
   return knex("movies").select("*");
 }
 
+function listTheatersIfMovieIdIsInParams(movieId) {
+  return knex("theaters as t")
+    .join("movies_theaters as mt", "t.theater_id", "mt.theater_id")
+    .where({ "mt.movie_id": movieId })
+    .select("*");
+}
+
 function listOnlyIfIsShowingIsTrue() {
   return knex("movies as m")
     .join("movies_theaters as mt", "m.movie_id", "mt.movie_id")
@@ -48,4 +55,5 @@ module.exports = {
   list,
   read,
   listReviewsByMovieId,
+  listTheatersIfMovieIdIsInParams,
 };

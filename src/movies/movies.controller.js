@@ -29,11 +29,22 @@ async function readReviewsByMovieId(req, res, next) {
   res.json({ data });
 }
 
+async function readTheatersByItsMovieId(req, res, next) {
+  const data = await service.listTheatersIfMovieIdIsInParams(
+    Number(req.params.movieId)
+  );
+  res.json({ data });
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [asyncErrorBoundary(movieExists), read],
   readReviewsByMovieId: [
     asyncErrorBoundary(movieExists),
     asyncErrorBoundary(readReviewsByMovieId),
+  ],
+  readTheatersByItsMovieId: [
+    asyncErrorBoundary(movieExists),
+    asyncErrorBoundary(readTheatersByItsMovieId),
   ],
 };
