@@ -24,7 +24,16 @@ function read(req, res, next) {
   res.json({ data: res.locals.movie });
 }
 
+async function readReviewsByMovieId(req, res, next) {
+  const data = await service.listReviewsByMovieId(Number(req.params.movieId));
+  res.json({ data });
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [asyncErrorBoundary(movieExists), read],
+  readReviewsByMovieId: [
+    asyncErrorBoundary(movieExists),
+    asyncErrorBoundary(readReviewsByMovieId),
+  ],
 };
